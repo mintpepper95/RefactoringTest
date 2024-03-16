@@ -1,5 +1,5 @@
-﻿namespace Refactoring.LegacyService {
-    public interface IConfigurationManagerWrapper {
-        string GetConnectionString();
-    }
+﻿namespace Refactoring.LegacyService;
+
+public interface IConfigurationManagerWrapper {
+    string GetConnectionString();
 }
