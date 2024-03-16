@@ -18,6 +18,7 @@
             if (string.IsNullOrEmpty(firstname) || string.IsNullOrEmpty(surname)) {
                 throw new ArgumentException("First name and last name can't be null or blank");
             }
+            // @@@@....   <= this would pass as a valid email, but readme says to assume the logic is perfectly sound so I won't temper with it.
             if (!emailAddress.Contains("@") || !emailAddress.Contains(".")) {
                 throw new ArgumentException("Email entered is not a valid email", "emailAddress");
             }

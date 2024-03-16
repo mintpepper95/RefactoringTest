@@ -15,10 +15,7 @@ namespace Refactoring.LegacyService.Tests {
         [InlineData("FeatureDeveloper", 400, false)]
         public async Task Adding_Candidate_Should_Return_Expected__Result(string candidateType, int candidateCredit, bool isCandidateAdded) {
             // Arrange
-            var mockConfigurationManagerWrapper = new Mock<IConfigurationManagerWrapper>();
-            mockConfigurationManagerWrapper.Setup(wrapper => wrapper.GetConnectionString()).Returns("test.connection.string");
-
-            var mockPositionRepository = new Mock<PositionRepository>(mockConfigurationManagerWrapper.Object);
+            var mockPositionRepository = new Mock<IPositionRepository>();
             var position = new Position(1, candidateType, "None");
             mockPositionRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(position);
 

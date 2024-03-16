@@ -14,7 +14,7 @@
         // Following the single responsibility principle, we have removed logics unrelated to adding Candidate into other classes.
         // CandidateService should not be responsible for things like fetching from PositionRepository, creation of Candidate,
         // parameter checking and updating Candidate instance.
-        // It should only be concerned with logics of deciding whether an Candidate should be added to the database.
+        // It should only be concerned with logic for deciding whether an Candidate should be added to the database.
         // For creation of Candidate, we have introduced a factory class for handling what type of Candidate class to create based on positionid.
         // For adding Candidate to the database, we delegate this responsibility to candidateRepository,
         // instead of having query related code inside CandidateDataAccess.

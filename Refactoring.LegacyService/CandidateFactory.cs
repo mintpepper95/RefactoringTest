@@ -6,14 +6,14 @@ namespace Refactoring.LegacyService {
         private ICandidateCreditService _candidateCreditService;
         private IPositionRepository _positionRepository;
 
-        // DI for loose couple
+        // DI for loose coupling
         public CandidateFactory(ICandidateCreditService candidateCreditService, IPositionRepository positionRepository) {
             _candidateCreditService = candidateCreditService;
             _positionRepository = positionRepository;
         }
 
         // For creation of Candidate, we have introduced a factory class for handling what type of Candidate class to create based on positionid.
-        // Also async as it's I/O bound task ( as we read credit from remote url ).
+        // Also async as it's I/O bound task ( as we read credit from db and remote url ).
         async Task<Candidate> ICandidateFactory.CreateCandidate(int positionid, DateTime dateOfBirth, string emailAddress, string firstname, string surname) {
             var position = await _positionRepository.GetByIdAsync(positionid);
             var credit = await _candidateCreditService.GetCreditAsync(firstname, surname, dateOfBirth);

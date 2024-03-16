@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Moq;
 using System;
 using Xunit;
 
@@ -58,8 +57,6 @@ namespace Refactoring.LegacyService.Tests {
         [InlineData("", "Email entered is not a valid email (Parameter 'emailAddress')")]
         public void Adding_Candidate_Should_Throw_Exception_With_Incorrect_Email_Format(string email, string exMessage) {
             // Arrange
-            var mockCandidateFactory = new Mock<ICandidateFactory>();
-            var mockCandidateRepository = new Mock<ICandidateRepository>();
             var position = new Position(1, "SecuritySpecialist", "None");
             var dateTime = DateTime.Now.AddYears(-20);
             Action action = () => new Candidate(position, dateTime, email, "jason", "xu", 700);
@@ -71,8 +68,6 @@ namespace Refactoring.LegacyService.Tests {
         [Fact]
         public void Adding_Candidate_Should_Throw_Exception_With_Age_Under_18() {
             // Arrange
-            var mockCandidateFactory = new Mock<ICandidateFactory>();
-            var mockCandidateRepository = new Mock<ICandidateRepository>();
             var position = new Position(1, "SecuritySpecialist", "None");
             var dateTime = DateTime.Now.AddYears(-17);
             Action action = () => new Candidate(position, dateTime, "jason@example.com", "jason", "xu", 700);

@@ -34,6 +34,7 @@
 
                 // Instead of keep reading and overwriting position variable like in the original code,
                 // We retrieve the value and store it into position variable and return immediately.
+                // I'm making the assumption positionid is unique and that we won't have dupe data.
                 if (await reader.ReadAsync()) {
                     int positionId;
                     // Check column for null and use try parse to avoid explicit exception handling

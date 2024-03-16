@@ -9,7 +9,7 @@ namespace Refactoring.LegacyService {
         private string _connectionString;
 
         // Since high level modules shouldn't rely on details of low level modules.
-        // We introduced IConfigurationManagerWrapper, a wrapper that gets the connection string,
+        // We introduce IConfigurationManagerWrapper, a wrapper that gets the connection string,
         // instead of retrieving directly from ConfigurationManager.
         public CandidateRepository(IConfigurationManagerWrapper config) {
             _connectionString = config.GetConnectionString();

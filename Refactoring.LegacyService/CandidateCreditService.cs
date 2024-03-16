@@ -32,7 +32,7 @@ namespace Refactoring.LegacyService {
         public CandidateCreditServiceClient(Binding binding, EndpointAddress remoteAddress) :
             base(binding, remoteAddress) { }
 
-        // GetCredit is I/O bound. made it async so thread doesn't just sit idling.
+        // GetCredit is I/O bound. Made it async so thread doesn't just sit idling.
         public Task<int> GetCreditAsync(string firstname, string surname, DateTime dateOfBirth) {
             return base.Channel.GetCreditAsync(firstname, surname, dateOfBirth);
         }
