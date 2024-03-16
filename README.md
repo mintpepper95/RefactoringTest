@@ -20,4 +20,4 @@
 
 ## Candidate Comments
 
-- I originally wanted to leave some comments here, but end up writing a lot of them. So instead I left the comments in the code, should be easier to understand that way.
+- I originally wanted to leave some comments here, but ended up writing a lot of them. So instead I left the comments in the code, hoepfully easier to understand that way. I've also upgraded both projects to dotnet 8.0, the latest and greatest version of dotnet ^_^
