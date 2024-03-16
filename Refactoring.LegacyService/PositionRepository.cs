@@ -21,7 +21,7 @@ public class PositionRepository : IPositionRepository {
         Position position = null;
 
         using (var connection = new SqlConnection(_connectionString)) {
-            connection.Open();
+            await connection.OpenAsync();
 
             var command = new SqlCommand {
                 Connection = connection,

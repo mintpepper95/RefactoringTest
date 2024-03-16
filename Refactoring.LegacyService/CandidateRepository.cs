@@ -40,7 +40,7 @@ public class CandidateRepository : ICandidateRepository {
             var positionIdParameter = new SqlParameter("@PositionId", SqlDbType.Int) { Value = candidate.Position.Id };
             command.Parameters.Add(positionIdParameter);
 
-            connection.Open();
+            await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
     }
