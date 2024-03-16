@@ -20,4 +20,4 @@
 
 ## Candidate Comments
 
-### Here is where candidates can leave comments*
+- I originally wanted to leave some comments here, but end up writing a lot of them. So instead I left the comments in the code, should be easier to understand that way.
