@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.Extensions.Options;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -7,18 +8,18 @@ namespace Refactoring.LegacyService;
 // Introduced repository pattern, so all the position query related stuff are in one place,
 // instead of scattering around in the codebase.
 public class PositionRepository : IPositionRepository {
-    private string _connectionString;
+    private readonly string _connectionString;
 
-    // Since high level modules shouldn't rely on details of low level modules.
-    // We introduced IConfigurationManagerWrapper, a wrapper that gets the connection string,
-    // instead of retrieving directly from ConfigurationManager.
-    public PositionRepository(IConfigurationManagerWrapper config) {
-        _connectionString = config.GetConnectionString();
+    // High level modules shouldn't rely on details of low level modules.
+    // We use Options pattern to read config settings. This adheres to interface segregation,
+    // as we don't need to update the IConfig in all the classes where it's injected if we ever change the config.
+    public PositionRepository(IOptions<DatabaseOptions> options) {
+        _connectionString = options.Value.ApplicationDatabase;
     }
 
     // Reading from db is an I/O bound task,so we do it async.
-    public virtual async Task<Position> GetByIdAsync(int id) {
-        Position position = null;
+    public virtual async Task<Position?> GetByIdAsync(int id) {
+        Position? position = null;
 
         using (var connection = new SqlConnection(_connectionString)) {
             await connection.OpenAsync();
@@ -44,9 +45,9 @@ public class PositionRepository : IPositionRepository {
                     int.TryParse(reader[positionIdOrdinalIndex].ToString(), out positionId)) {
                     position = new Position(
                         positionId,
-                        reader["Name"].ToString(),
+                        reader["Name"].ToString() ?? string.Empty,
                         // Since Status is only read here, I updated Status property in Position to string type
-                        reader["Status"].ToString());
+                        reader["Status"].ToString() ?? string.Empty);
                 }
             }
             return position;

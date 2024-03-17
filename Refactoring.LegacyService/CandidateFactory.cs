@@ -19,6 +19,11 @@ public class CandidateFactory : ICandidateFactory {
     // Also async as it's I/O bound task ( as we read credit from db and remote url ).
     public async Task<Candidate> CreateCandidate(int positionid, DateTime dateOfBirth, string emailAddress, string firstname, string surname) {
         var position = await _positionRepository.GetByIdAsync(positionid);
+
+        if (position == null) {
+            throw new InvalidOperationException($"Position associated with {positionid} was not found!");
+        }
+
         var credit = await _candidateCreditService.GetCreditAsync(firstname, surname, dateOfBirth);
 
         switch (position.Name) {
