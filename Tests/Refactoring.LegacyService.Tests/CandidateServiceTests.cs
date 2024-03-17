@@ -27,7 +27,11 @@ public class CandidateServiceTests {
 
         var mockCandidateRepository = new Mock<ICandidateRepository>();
 
-        var candidateFactory = new CandidateFactory(mockCandidateCreditService.Object, mockPositionRepository.Object);
+        var fakeNow = new DateTime(2024, 1, 1);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
+
+        var candidateFactory = new CandidateFactory(mockCandidateCreditService.Object, mockPositionRepository.Object, mockTimeProvider.Object);
         var candidateService = new CandidateService(candidateFactory, mockCandidateRepository.Object);
 
         // Act

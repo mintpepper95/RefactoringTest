@@ -15,7 +15,7 @@ public class Candidate {
     // Such as invalid names and emails or underage, as it does not make sense.
     // Note this is different to the logic of determining whether we should actually add a Candidate to the database,
     // eg. using their credits. That logic should be handled by the appropriate service that adds the Candidate to the database.
-    public Candidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit) {
+    public Candidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit, ITimeProvider timeProvider) {
         if (string.IsNullOrEmpty(firstname) || string.IsNullOrEmpty(surname)) {
             throw new ArgumentException("First name and last name can't be null or blank");
         }
@@ -23,7 +23,7 @@ public class Candidate {
         if (!emailAddress.Contains("@") || !emailAddress.Contains(".")) {
             throw new ArgumentException("Email entered is not a valid email", "emailAddress");
         }
-        var age = CalculateAge(dateOfBirth);
+        var age = CalculateAge(dateOfBirth, timeProvider);
         if (age < 18) {
             throw new ArgumentException("Candidate age must be 18 or over", "dateOfBirth");
         }
@@ -39,8 +39,8 @@ public class Candidate {
     // CalculateAge() has been moved from CandidateService to Candidate.
     // Because it doesn't make sense to create a Candidate who's under 18,
     // just like it doesn't make sense to create a Candidate with invalid name or email.
-    private int CalculateAge(DateTime dateOfBirth) {
-        var now = DateTime.Now;
+    private int CalculateAge(DateTime dateOfBirth, ITimeProvider timeProvider) {
+        var now = timeProvider.Now;
         int age = now.Year - dateOfBirth.Year;
 
         if (now.Month < dateOfBirth.Month || (now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)) {
@@ -56,8 +56,8 @@ public class Candidate {
 // This ensures each role can have its own RequiredCreditCheck and Credit, and we don't need to adjust these values
 // anywhere else ( for example in CandidateService ) anytime we introduce a new candidate role which reduces coupling.
 public class SecuritySpecialistCandidate : Candidate {
-    public SecuritySpecialistCandidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit)
-        : base(position, dateOfBirth, emailAddress, firstname, surname, credit) { }
+    public SecuritySpecialistCandidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit, ITimeProvider timeProvider)
+        : base(position, dateOfBirth, emailAddress, firstname, surname, credit, timeProvider) { }
 
     public override bool RequireCreditCheck => true;
 
@@ -65,8 +65,8 @@ public class SecuritySpecialistCandidate : Candidate {
 }
 
 public class FeatureDeveloperCandidate : Candidate {
-    public FeatureDeveloperCandidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit)
-        : base(position, dateOfBirth, emailAddress, firstname, surname, credit) { }
+    public FeatureDeveloperCandidate(Position position, DateTime dateOfBirth, string emailAddress, string firstname, string surname, int credit, ITimeProvider timeProvider)
+        : base(position, dateOfBirth, emailAddress, firstname, surname, credit, timeProvider) { }
 
     public override bool RequireCreditCheck => true;
 }

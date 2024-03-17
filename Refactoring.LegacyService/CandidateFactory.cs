@@ -6,11 +6,13 @@ namespace Refactoring.LegacyService;
 public class CandidateFactory : ICandidateFactory {
     private ICandidateCreditService _candidateCreditService;
     private IPositionRepository _positionRepository;
+    private ITimeProvider _timeProvider;
 
     // DI for loose coupling
-    public CandidateFactory(ICandidateCreditService candidateCreditService, IPositionRepository positionRepository) {
+    public CandidateFactory(ICandidateCreditService candidateCreditService, IPositionRepository positionRepository, ITimeProvider timeProvider) {
         _candidateCreditService = candidateCreditService;
         _positionRepository = positionRepository;
+        _timeProvider = timeProvider;
     }
 
     // For creation of Candidate, we have introduced a factory class for handling what type of Candidate class to create based on positionid.
@@ -21,11 +23,11 @@ public class CandidateFactory : ICandidateFactory {
 
         switch (position.Name) {
             case "SecuritySpecialist":
-                return new SecuritySpecialistCandidate(position, dateOfBirth, emailAddress, firstname, surname, credit);
+                return new SecuritySpecialistCandidate(position, dateOfBirth, emailAddress, firstname, surname, credit, _timeProvider);
             case "FeatureDeveloper":
-                return new FeatureDeveloperCandidate(position, dateOfBirth, emailAddress, firstname, surname, credit);
+                return new FeatureDeveloperCandidate(position, dateOfBirth, emailAddress, firstname, surname, credit, _timeProvider);
             default:
-                return new Candidate(position, dateOfBirth, emailAddress, firstname, surname, credit);
+                return new Candidate(position, dateOfBirth, emailAddress, firstname, surname, credit, _timeProvider);
         }
     }
 }

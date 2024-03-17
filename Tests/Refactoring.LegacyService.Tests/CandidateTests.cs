@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Moq;
 using System;
 using Xunit;
 
@@ -15,10 +16,13 @@ public class CandidateTests {
     public void Adding_Candidate_Should_Throw_Exception_When_First_Or_Last_Name_Is_Empty_Or_Null(string firstName, string lastName, string exMessage) {
         // Arrange
         var position = new Position(1, "SecuritySpecialist", "None");
-        var dateTime = DateTime.Now.AddYears(-20);
+        var fakeNow = new DateTime(2024, 1, 1);
+        var dateOfBirth = fakeNow.AddYears(-20);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
 
         // Act
-        Action action = () => new Candidate(position, dateTime, "jason.xu@example.com", firstName, lastName, 700);
+        Action action = () => new Candidate(position, dateOfBirth, "jason.xu@example.com", firstName, lastName, 700, mockTimeProvider.Object);
 
         // Assert
         action.Should().Throw<ArgumentException>().WithMessage(exMessage);
@@ -31,19 +35,22 @@ public class CandidateTests {
     public void Adding_Candidate_Should_Return_A_Candidate_With_Correct_Credit_And_BackgroundCheckRequirement(string candidateType, int candidateCredit, int expectedCredit, bool isCreditCheckRequired) {
         // Arrange
         var position = new Position(1, "SecuritySpecialist", "None");
-        var dateTime = DateTime.Now.AddYears(-20);
+        var fakeNow = new DateTime(2024, 1, 1);
+        var dateOfBirth = fakeNow.AddYears(-20);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
 
         // Act
         Candidate candidate;
         switch (candidateType) {
             case "SecuritySpecialist":
-                candidate = new SecuritySpecialistCandidate(position, dateTime, "jason@example.com", "jason", "xu", candidateCredit);
+                candidate = new SecuritySpecialistCandidate(position, dateOfBirth, "jason@example.com", "jason", "xu", candidateCredit, mockTimeProvider.Object);
                 break;
             case "FeatureDeveloper":
-                candidate = new FeatureDeveloperCandidate(position, dateTime, "jason@example.com", "jason", "xu", candidateCredit);
+                candidate = new FeatureDeveloperCandidate(position, dateOfBirth, "jason@example.com", "jason", "xu", candidateCredit, mockTimeProvider.Object);
                 break;
             default:
-                candidate = new Candidate(position, dateTime, "jason@example.com", "jason", "xu", candidateCredit);
+                candidate = new Candidate(position, dateOfBirth, "jason@example.com", "jason", "xu", candidateCredit, mockTimeProvider.Object);
                 break;
         }
 
@@ -58,8 +65,11 @@ public class CandidateTests {
     public void Adding_Candidate_Should_Throw_Exception_With_Incorrect_Email_Format(string email, string exMessage) {
         // Arrange
         var position = new Position(1, "SecuritySpecialist", "None");
-        var dateTime = DateTime.Now.AddYears(-20);
-        Action action = () => new Candidate(position, dateTime, email, "jason", "xu", 700);
+        var fakeNow = new DateTime(2024, 1, 1);
+        var dateOfBirth = fakeNow.AddYears(-20);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
+        Action action = () => new Candidate(position, dateOfBirth, email, "jason", "xu", 700, mockTimeProvider.Object);
 
         // Act and Assert
         action.Should().Throw<ArgumentException>().WithMessage(exMessage);
@@ -69,8 +79,11 @@ public class CandidateTests {
     public void Adding_Candidate_Should_Throw_Exception_With_Age_Under_18() {
         // Arrange
         var position = new Position(1, "SecuritySpecialist", "None");
-        var dateTime = DateTime.Now.AddYears(-17);
-        Action action = () => new Candidate(position, dateTime, "jason@example.com", "jason", "xu", 700);
+        var fakeNow = new DateTime(2024, 1, 1);
+        var dateOfBirth = fakeNow.AddYears(-16);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
+        Action action = () => new Candidate(position, dateOfBirth, "jason@example.com", "jason", "xu", 700, mockTimeProvider.Object);
 
         // Act and Assert
         action.Should().Throw<ArgumentException>().WithMessage("Candidate age must be 18 or over (Parameter 'dateOfBirth')");
