@@ -14,8 +14,7 @@ public class CandidateTests {
     [InlineData(null, "xu", "First name and last name can't be null or blank")]
     public void Adding_Candidate_Should_Throw_Exception_When_First_Or_Last_Name_Is_Empty_Or_Null(string firstName, string lastName, string exMessage) {
         // Arrange
-        var positionid = 1;
-        var position = new Position(positionid, "SecuritySpecialist", "None");
+        var position = new Position(1, "SecuritySpecialist", "None");
         var dateTime = DateTime.Now.AddYears(-20);
 
         // Act
