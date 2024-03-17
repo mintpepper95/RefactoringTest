@@ -40,5 +40,33 @@ public class CandidateServiceTests {
         // Assert
         result.Should().Be(isCandidateAdded);
     }
+
+
+    [Fact]
+    public async Task Adding_Candidate_With_Invalid_Position_Should_Throw_Exception() {
+        // Arrange
+        var position = new Position(1, "Candidate", "None");
+        var dateOfBirth = DateTime.Now.AddYears(-20);
+
+        var mockPositionRepository = new Mock<IPositionRepository>();
+        mockPositionRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Position)null);
+
+        var mockCandidateCreditService = new Mock<ICandidateCreditService>();
+        mockCandidateCreditService.Setup(service => service.GetCreditAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).ReturnsAsync(700);
+
+        var mockCandidateRepository = new Mock<ICandidateRepository>();
+
+        var fakeNow = new DateTime(2024, 1, 1);
+        var mockTimeProvider = new Mock<ITimeProvider>();
+        mockTimeProvider.Setup(x => x.Now).Returns(fakeNow);
+
+        var candidateFactory = new CandidateFactory(mockCandidateCreditService.Object, mockPositionRepository.Object, mockTimeProvider.Object);
+        var candidateService = new CandidateService(candidateFactory, mockCandidateRepository.Object);
+
+        var action = async () => await candidateService.AddCandidate("jason", "xu", "jason.xu@example.com", dateOfBirth, position.Id);
+
+        // Act and Assert
+        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("Position associated with 1 was not found!");
+    }
 }
 
